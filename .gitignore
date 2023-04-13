@@ -39,3 +39,4 @@ testem.log
 Thumbs.db
 
 .vscode/chrome
+node_modules
