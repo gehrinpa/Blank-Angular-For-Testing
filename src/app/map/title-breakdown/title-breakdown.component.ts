@@ -167,7 +167,7 @@ export class TitleBreakdownComponent implements OnInit, OnChanges {
                         tooltip.pivot();
                         tooltip.transition(easing).draw();
                     });
-                    chart['options']['tooltips']['enabled'] = false;
+                    // chart['options']['tooltips']['enabled'] = false;
                 }
             }
         });

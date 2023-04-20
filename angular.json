@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Blank_Angular_For_Testing": {
+    "blank-angular-for-testing": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
