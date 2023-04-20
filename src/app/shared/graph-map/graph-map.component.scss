@@ -1,0 +1,18 @@
+.btn-outline-warning {
+    &:hover, &:focus {
+        color: #f0ad4e;
+        background-image: none;
+        background-color: transparent;
+        border-color: #f0ad4e;
+    }
+}
+.btn-warning {
+    &:hover, &:focus {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #f0ad4e;
+    }
+}
+.btn {
+    float: right;
+}

@@ -1,0 +1,7 @@
+<button *ngIf="relativeScaleButton" class="btn" (click)="relativeScaleOn = !relativeScaleOn" [class.btn-danger]="_relativeScaleOn" [class.btn-outline-danger]="!_relativeScaleOn">Relative scaling</button>
+<div class="clearfix"></div>
+
+<div [style.height.px]="height">
+    <ngx-charts-bar-vertical-2d scheme="flame" *ngIf="bars == 'vertical'" [results]="results" [xAxis]="true" [yAxis]="true" [legend]="showLegend"></ngx-charts-bar-vertical-2d>
+    <ngx-charts-bar-horizontal-2d animations="false" [scheme]="colorScheme" *ngIf="bars == 'horizontal'" [results]="results" [xAxis]="true" [yAxis]="true" [legend]="showLegend" [barPadding]="4" [groupPadding]="8" (select)="onClick($event)"></ngx-charts-bar-horizontal-2d>
+</div>

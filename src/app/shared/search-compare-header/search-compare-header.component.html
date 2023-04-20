@@ -1,0 +1,22 @@
+<header class="navbar bg-white navbar-expand-lg">
+    <form class="form-inline justify-content-md-end navbar-collapse bg-white" [collapse]="searchCollapsed" id="search-form">
+        <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+        <select class="form-control custom-select mr-md-3 my-2" [(ngModel)]="mode" (ngModelChange)="clearItems()" name="mode" *ngIf="!searchOptions.singleSearch">
+            <option value="sector">Compare Sectors</option>
+            <option value="company">Compare Two Companies (Beta)</option>
+            <option value="company_sector">Compare a Company against a Sector (Beta)</option>
+        </select>
+        <label class="mr-2" for="search-item-1" *ngIf="searchOptions.singleSearch && mode == 'sector'">Choose a sector: </label>
+        <label class="mr-2" for="search-item-1" *ngIf="searchOptions.singleSearch && mode == 'company'">Choose a company: </label>
+
+        <ng-template #customItemTemplate let-model="item" let-index="index" class="test">
+            <span [class.text-muted]="!authService.canViewSector(model)">{{model}}</span>
+        </ng-template>
+
+        <input id="search-item-1" class="form-control mr-md-3 my-2" type="text" placeholder="{{placeholder1}}" autocomplete="off" [(ngModel)]="item1" [typeahead]="typeahead1" [typeaheadItemTemplate]="customItemTemplate" [ngModelOptions]="{standalone: true}"/>
+        <input class="form-control mr-md-3 my-2" type="text" placeholder="{{placeholder2}}" autocomplete="off" [(ngModel)]="item2" [typeahead]="typeahead2" [typeaheadItemTemplate]="customItemTemplate" [ngModelOptions]="{standalone: true}" *ngIf="!searchOptions.singleSearch"/>
+        <div class="d-inline-block my-2" *ngIf="!hideSearchButton" >
+            <button class="btn btn-outline-danger" (click)="search()">Search</button>
+        </div>
+    </form>
+</header>

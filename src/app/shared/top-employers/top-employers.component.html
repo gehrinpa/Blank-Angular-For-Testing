@@ -1,0 +1,40 @@
+<div style="display:flex;flex-wrap:wrap;">
+
+  <h5>Top Employers</h5>
+
+  <div class="text-center" *ngIf="loading">
+    <app-loading></app-loading>
+  </div>
+
+  <table class="table table-sm" *ngIf="!loading && jobTitle">
+    <thead>
+      <tr class="bg-light">
+        <th>Employer</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employer of topEmployers">
+        <td>{{employer.employer}}</td>
+        <td>{{employer.count}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col-12 col-md-6" *ngIf="!loading && jobTitle" style="padding-left:0;">
+    <button type="button" (click)="onPrevButtonClick()" class="btn btn-sm btn-success"
+        [disabled]="!prevAllowed" style="float:left;border-radius:5px;">
+        Prev
+    </button>
+  </div>
+  <div class="col-12 col-md-6 text-md-right" *ngIf="!loading && jobTitle" style="padding-right:0;">
+    <button type="button" (click)="onNextButtonClick()" class="btn btn-sm btn-success"
+        [disabled]="!nextAllowed" style="float:right;border-radius:5px;">
+        Next
+    </button>
+  </div>
+
+  <h3 *ngIf="!jobTitle" class="alert alert-info error-alert mt-5 mb-5">
+    Need Job Title
+  </h3>
+
+</div>

@@ -1,0 +1,116 @@
+<header class="navbar bg-white navbar-extend-lg">
+  <form class="form-inline">
+    <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+    <div class="form-group mr-2">
+      <label for="analysis-category" class="mr-2">Category</label>
+      <select *ngIf="categories" id="analysis-category" class="form-control" name="analysis-category" [(ngModel)]="selectedCategory" (ngModelChange)="onChange()" [disabled]="loading">
+        <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+      </select>
+    </div>
+    <div class="form-group mr-2">
+      <label for="analysis-field" class="mr-2">Field</label>
+      <select *ngIf="titleFields" id="analysis-field" class="form-control" name="analysis-field" [(ngModel)]="selectedTitleField" (ngModelChange)="onChange()" [disabled]="loading">
+        <option *ngFor="let field of titleFields" [value]="field">{{field}}</option>
+      </select>
+    </div>
+    <div class="form-group mr-2">
+      <label class="mr-2">Range</label>
+      <div class="input-group">
+        <input type="number" placeholder="Min" class="form-control" name="min-count" [(ngModel)]="minCount" [disabled]="loading" />
+        <input type="number" placeholder="Max" class="form-control" name="max-count" [(ngModel)]="maxCount" [disabled]="loading" />
+        <div class="input-group-append">
+          <button class="btn btn-outline-danger" type="button" (click)="onChange()" [disabled]="loading">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group mr-2">
+      <label for="date-range" class="mr-2">Date range</label>
+      <div class="input-group">
+        <input type="text" class="form-control" name="date-range" [(ngModel)]="dateRange" (ngModelChange)="onChange()" [disabled]="loading" bsDaterangepicker [bsConfig]="{ containerClass: 'theme-orange' }" />
+        <div class="input-group-append" *ngIf="dateRange">
+          <button class="btn btn-outline-danger" type="button" (click)="dateRange = null; onChange()" [disabled]="loading">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group mr-2">
+      <label for="skill" class="mr-2">Skill</label>
+      <div class="input-group">
+        <input class="form-control" type="text" name="skill" autocomplete="off" [(ngModel)]="searchedSkill" [typeahead]="skillItems" [typeaheadAsync]="true" typeaheadMinLength="2" [disabled]="loading" />
+        <div class="input-group-append">
+          <button class="btn btn-outline-danger" type="button" (click)="search()" [disabled]="loading">Apply</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</header>
+
+<div class="card">
+  <div class="card-body">
+    <div class="card m-2">
+      <div class="card-body">
+        <p>Skills which overlap with the labour market for the same role are marked with *</p>
+      </div>
+    </div>
+
+    <div class="card m-2" id="skills-breakdown-parent" *ngIf="skillsHeatmap">
+      <div class="card-header">
+        <button class="btn btn-link" (click)="showSkillsBreakdown = !showSkillsBreakdown">
+          Skills breakdown
+        </button>
+      </div>
+      <div [collapse]="!showSkillsBreakdown">
+        <form class="form-inline m-2">
+          <div class="input-group">
+            <label for="title" class="mr-2">{{selectedTitleField}}</label>
+            <input class="form-control" type="text" name="title" autocomplete="off" (change)="onTitleSearch($event)" [disabled]="loading" />
+          </div>
+        </form>
+        <div class="d-flex flex-wrap my-3">
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <p>Top 10 non-market skills</p>
+                <table class="table">
+                  <tr>
+                    <th>Title</th>
+                    <th>Skills</th>
+                  </tr>
+                  <tr *ngFor="let role of nonMarket">
+                    <td>{{role.title}}</td>
+                    <td>
+                      <div class="badge" *ngFor="let skill of role.skills">
+                        {{skill.name}} ({{skill.score}})
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <p>Top 10 market skills</p>
+                <table class="table">
+                  <tr>
+                    <th>Title</th>
+                    <th>Skills</th>
+                  </tr>
+                  <tr *ngFor="let role of market">
+                    <td>{{role.title}}</td>
+                    <td>
+                      <div class="badge" *ngFor="let skill of role.skills">
+                        {{skill.name}} ({{skill.score}})
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="chart" #chart></div>
+  </div>
+</div>

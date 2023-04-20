@@ -1,0 +1,16 @@
+.sk-wave
+{
+    margin: 0;
+
+    & .sk-rect
+    {
+        background-color: #f0ad4e;
+    }
+
+    &.amplifi {
+        & .sk-rect {
+            background-color: #e31314;
+        }
+    }
+
+}

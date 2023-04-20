@@ -1,0 +1,47 @@
+<div style="display:flex;flex-wrap:wrap;">
+            
+  <h5>Top Advertisers: {{title}}</h5>
+
+  <div class="text-center mt-5 mb-5" *ngIf="loading">
+      <app-loading></app-loading>
+  </div>
+
+  <h3 *ngIf="error" class="alert alert-danger error-alert mt-5 mb-5">
+      <b>Could not load top advertisers.</b> {{topAdvertisersError | json}}
+  </h3>
+
+  <div *ngIf="!loading" style="width:100%">
+
+      <h3 *ngIf="topAdvertisers.length === 0 && title === ''" class="alert alert-info error-alert mt-5 mb-5">
+          Need Job Title
+      </h3>
+      <h3 *ngIf="topAdvertisers.length === 0 && title !== ''" class="alert alert-info error-alert mt-5 mb-5">
+          No Data
+      </h3>
+      <table *ngIf="topAdvertisers.length !== 0" class="table table-sm table-hover borderless m-1">
+          <tr class="bg-light">
+              <th>Company</th>
+              <th>Count</th>
+          </tr>
+          <tr style="cursor: pointer;" *ngFor="let advertiser of topAdvertisers"
+              (click)="openSampleJobAdvertModal(sampleJobAdvertTemplate, advertiser)">
+              <td>{{advertiser.company}}</td>
+              <td>{{advertiser.count}}</td>
+          </tr>
+      </table>
+  </div>               
+
+  <div class="col-12 col-md-6" *ngIf="topAdvertisers.length !== 0 && !loading" style="padding-left:0;">
+      <button type="button" (click)="adPrevButtonClick()" class="btn btn-sm btn-success"
+          [disabled]="!prevAllowed" style="float:left;border-radius:5px;">
+          Prev
+      </button>
+    </div>
+    <div class="col-12 col-md-6 text-md-right" *ngIf="topAdvertisers.length !== 0 && !loading" style="padding-right:0;">
+      <button type="button" (click)="adNextButtonClick()" class="btn btn-sm btn-success"
+          [disabled]="!nextAllowed" style="float:right;border-radius:5px;">
+          Next
+      </button>
+    </div>
+
+</div>

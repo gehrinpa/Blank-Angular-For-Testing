@@ -1,0 +1,10 @@
+<div [style.height.px]="height">
+    <ngx-charts-tree-map scheme="flame" [customColors]="getColour" [results]="results" (select)="itemSelected($event)">
+        <ng-template #tooltipTemplate let-model="model">
+            <div class="tooltip-wrap">
+                <strong>{{model.name}}</strong> {{model.value}}<br/>
+                {{getDescription(model.name)}}
+            </div>
+        </ng-template>
+    </ngx-charts-tree-map>
+</div>

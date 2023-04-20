@@ -1,0 +1,29 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+}
+
+#search-form input
+{
+    flex-grow: 1;
+}
+
+@include media-breakpoint-down(sm) {
+    #search-form {
+        margin: 0 -1rem;
+        margin-top: -2px;
+        padding: 0 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+    }
+
+    #search-form .form-control {
+        display: block;
+        width: 100%;
+    }
+}

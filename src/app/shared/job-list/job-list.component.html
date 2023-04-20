@@ -1,0 +1,24 @@
+<div [@fade]>
+    <div class="card-body" *ngIf="jobs">
+        <h4 class="card-title">{{title}}</h4>
+        <h6 class="card-subtitle text-muted mb-2">{{subtitle}}</h6>
+        <alert type="info" *ngIf="!jobs.length" [@fade]>No data available for supplied query</alert>
+    </div>
+
+    <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action" [href]="job.redirect_url" target="_blank" *ngFor="let job of jobs">
+            <div class="d-flex w-100 justify-content-between">
+                <span [innerHTML]="job.title"></span>
+                <small>{{job.location.display_name}}</small>
+            </div>
+            <small>&pound;{{job.salary_min}} - &pound;{{job.salary_max}}</small>
+        </a>
+    </div>
+
+    <div class="card-body" *ngIf="!jobs">
+        <alert type="info" [@fade]>Select a career to display jobs</alert>
+    </div>
+    <div class="card-footer" *ngIf="totalItems > 10">
+        <pagination [totalItems]="totalItems" itemsPerPage="10" [maxSize]="5" [rotate]="true" [(ngModel)]="currentPage" (pageChanged)="onPageChanged($event)" class="mb-0"></pagination>
+    </div>
+</div>
