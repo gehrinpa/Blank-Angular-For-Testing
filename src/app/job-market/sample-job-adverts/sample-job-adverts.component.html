@@ -1,0 +1,40 @@
+<div *ngIf="loading" class="text-center mt-5 mb-5">
+  <app-loading></app-loading>
+</div>
+
+<div *ngIf="!loading && sampleJobAds.length === 0">
+  No Results
+</div>
+
+<div *ngIf="!loading && sampleJobAds.length > 0">
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <button class="btn btn-primary btn-sm" (click)="previousClicked()" *ngIf="shouldShowPrevious()">
+        Previous
+      </button>
+    </div>
+    <div class="col-12 col-md-4 text-center">
+      <small>{{currentIndex + 1}} of {{sampleJobAds.length}}</small>
+    </div>
+    <div class="col-12 col-md-4 text-sm-right">
+      <button class="btn btn-primary btn-sm" (click)="nextClicked()" *ngIf="shouldShowNext()">
+        Next
+      </button>
+    </div>
+    <div class="col-12 mt-4">
+      <div class="job-description">
+        {{sampleJobAds[currentIndex].description}}
+      </div>
+    </div>
+    <div class="col-12 mt-2">
+      <a class="btn btn-primary btn-sm" *ngIf="sampleJobAds[currentIndex].url" href="{{sampleJobAds[currentIndex].url}}"
+        target="_blank" rel="noopener">
+        Open Link
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-danger" *ngIf="error">
+  <b>Unable to find job adverts.</b> {{ error | json }}
+</div>

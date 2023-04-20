@@ -1,0 +1,17 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.error-alert {
+  margin:auto;
+  font-weight:normal;
+  width:80%;
+  font-size:1rem;
+  text-align: center;
+}
+
+.writer-area {
+  width:66%;
+  height:98%;
+  margin:1vh;
+  display: inline-block;
+  overflow-y: scroll;
+}

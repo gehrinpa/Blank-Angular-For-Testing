@@ -1,0 +1,218 @@
+<main class='container-fluid bg-white' style='height:100vh;width:100%;'>
+    <div class='card d-inline-block shadow float-left'
+        style="width:30%;height:98%;margin:1vh;overflow-x:hidden;overflow-y:auto;">
+
+        <!-- Salary -->
+        <div class="border m-1 p-2 bg-white" style="width:98%;display:flex;flex-direction:column;">
+
+            <div class="row">
+              <div class="col-12 col-md-8">
+                <h5>Salary - {{salaryChartTitle}}</h5>
+              </div>
+              <div class="col-12 col-md-4 text-md-right">
+                <mat-slide-toggle [color]="'accent'" [checked]="checkedTitleSkill"
+                  (change)="titleSkillBoxChecked()" [disabled]="disabled"> {{titleSkillValue}}
+                </mat-slide-toggle>
+              </div>
+            </div>
+
+            <h3 *ngIf="single.length==0 && titleSkillValue === 'Title'" class="alert alert-info error-alert mt-5 mb-5">
+                Need Job Title
+            </h3>
+            <h3 *ngIf="single.length==0 && titleSkillValue === 'Skill'" class="alert alert-info error-alert mt-5 mb-5">
+                Need Key Skills
+            </h3>
+            
+            <div *ngIf="single.length!=0" style="width:100%;height:100%;flex-grow:1;">
+                <ngx-charts-bar-horizontal [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient"
+                    [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"
+                    (select)="onSalaryBarSelect($event)">
+                </ngx-charts-bar-horizontal>
+            </div>
+        </div>
+
+        <!-- Suggested Titles -->
+        <div class="border m-1 p-2 bg-white">
+            <h5>Suggested Titles</h5>
+            <h3 *ngIf="suggestedTitleList.length==0" class="alert alert-info error-alert mt-5 mb-5">
+                Need Key Skills
+            </h3>
+            <table *ngIf="suggestedTitleList.length!=0" style="cursor:pointer;" class="borderless table table-sm m-1">
+                <thead>
+                    <tr class="border bg-light">
+                        <th>Title</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let suggestedTitle of suggestedTitleList"
+                        (click)="onSuggestedTitleSelect(suggestedTitle)">
+                        <td>{{suggestedTitle.title}}</td>
+                        <td>{{suggestedTitle.count}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Regional Availability -->
+        <div class="border m-1 p-2 bg-white">
+            <h5>Regional Availability: {{title}}</h5>
+
+            <div class="text-center mt-5 mb-5" *ngIf="regionalAvailabilityLoading">
+                <app-loading></app-loading>
+            </div>
+
+            <div *ngIf="!regionalAvailabilityLoading">
+                <h3 *ngIf="regionalAvailabilityList.length == 0" class="alert alert-info error-alert mt-5 mb-5">Need Job
+                    Title</h3>
+                <table *ngIf="regionalAvailabilityList.length != 0" style="cursor:pointer;"
+                    class="table table-sm table-hover borderless mt-1 w-100">
+                    <thead>
+                        <tr class="bg-light">
+                            <th>Title</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let regionalAvailability of regionalAvailabilityList"
+                            (click)="onRegionalAvailabilitySelect(regionalAvailability.title)">
+                            <td>{{regionalAvailability.title}}</td>
+                            <td>{{regionalAvailability.count}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Advertisers -->
+        <div class="border m-1 p-2 bg-white">
+            <app-top-advertisers 
+                [jobTitle]="title" 
+                [startDate]="searchParams.startDate" 
+                [endDate]="searchParams.endDate" 
+                [regionCode]="searchParams.regionCode"
+                [category]="searchParams.sector"
+            ></app-top-advertisers>
+        </div>
+
+        <!-- Top Employers -->
+        <div class="border m-1 p-2 bg-white">
+            <app-top-employers [jobTitle]="title"></app-top-employers>
+        </div>
+
+        <!-- Top / Related Skills -->
+        <div class="border m-1 p-2 bg-white">
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <h5 class="m-0" *ngIf="topSkillsValue == 'Title'">
+                        Top Skills: {{skillsChartTitle}}
+                    </h5>
+                    <h5 class="m-0" *ngIf="topSkillsValue == 'Skills'">
+                        Skills Related: {{skillsChartTitle}}
+                    </h5>
+                </div>
+                <div class="col-12 col-md-4 text-right">
+                    <mat-slide-toggle [color]="'accent'" [checked]="checkedTopSkills" (change)="topSkillsBoxChecked()"
+                        [disabled]="disabled"> {{topSkillsValue}}
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-12">
+                    <h3 *ngIf="multi.length==0 && topSkillsValue == 'Title'"
+                        class="alert alert-info error-alert mt-5 mb-5">
+                        Need Job Title
+                    </h3>
+                    <h3 *ngIf="multi.length==0 && topSkillsValue == 'Skills'"
+                        class="alert alert-info error-alert mt-5 mb-5">
+                        Need Key Skills
+                    </h3>
+                    <h3 *ngIf="multi.length == 1 && multi[0]['name']==undefined"
+                        class="alert alert-info error-alert mt-5 mb-5">
+                        No Data
+                    </h3>
+                </div>
+                <div class="col-12" *ngIf="multi.length!=0 && multi[0]['name']!=undefined" style="min-height: 350px;">
+                    <div style="width:100%;height:100%;flex-grow:1;">
+                        <ngx-charts-bar-horizontal [view]="view" [scheme]="colorScheme" [results]="multi"
+                            [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+                            [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" (select)="onSkillBarSelect($event)">
+                        </ngx-charts-bar-horizontal>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6" *ngIf="multi.length !== 0">
+                    <button type="button" (click)="onPrevButtonClick()" class="btn btn-sm btn-success"
+                        [disabled]="!multiPrevAllowed" style="float:left;border-radius:5px;">
+                        Prev
+                    </button>
+                </div>
+                <div class="col-12 col-md-6 text-md-right" *ngIf="multi.length !== 0">
+                    <button type="button" (click)="onNextButtonClick()" class="btn btn-sm btn-success"
+                        [disabled]="!multiNextAllowed" style="float:right;border-radius:5px;">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class='card shadow writer-area'>
+        <input class="mb-0 mt-5 ml-5" style="width:60%;box-shadow:none;font-size:150%;font-weight:bold;border:0px;"
+            type="Text" placeholder="Title" id="titleField">
+        <div>
+            <p style="width:auto;max-width:15%" class="d-inline-block m-2 ml-5">Key Skills:</p>
+            <ng-select class="m-1 ml-2 bg-white d-inline-block borderless" multiple="true" [(ngModel)]="selectedSkills"
+                [addTag]=true [items]="skillItems | async" [typeahead]="skillSubject" (change)="populateTitleList()"
+                placeholder="Key Skill(s)" style="max-width:70%;" id="ngSelect">
+            </ng-select>
+            <mat-slide-toggle style="float:right;width:30%" [color]="'accent'" [checked]="checked"
+                (change)="andOrBoxChecked()" [disabled]="disabled"> {{slideValue}}
+            </mat-slide-toggle>
+        </div>
+        <input class="bg-white m-2 ml-5" type="Text" placeholder="Location - NUTS1"
+            style="width:30%;border:0;box-shadow:none" id="locationField" [(ngModel)]="selectedLocation"
+            [typeahead]="nutsRegionNames" typeaheadOptionField="name" (typeaheadOnSelect)="locationSelect($event)">
+        <input class="bg-white m-2 ml-5" type="Text" placeholder="Permanent/Contract"
+            style="width:30%;border:0;box-shadow:none">
+        <div>
+            <input class="m-1 ml-5 bg-white d-inline-block" type="Text" id="salary_1" placeholder="Salary"
+                style="width:10%;border:0;box-shadow:none">
+            <div class="m-1 d-inline-block">-</div>
+            <input class="m-1 bg-white d-inline-block" type="Text" id="salary_2" placeholder="Salary"
+                style="width:10%;border:0;box-shadow:none">
+            <div class="mx-3 d-inline-block">per</div>
+            <input class="m-1 bg-white d-inline-block" type="Text" id="salary_period" placeholder="Day/Annum"
+                style="width:20%;border:0;box-shadow:none">
+        </div>
+        <div class="" style="width:100%;height:21%">
+            <div class="m-2 ml-5" contenteditable="true" style="width:90%;height:96%">
+                <span style="font-size:130%;">Role Overview</span>
+                <br>-<br>-<br>-</div>
+        </div>
+        <div class="" style="width:100%;height:21%">
+            <div class="m-2 ml-5" contenteditable="true" style="width:90%;height:96%">
+                <span style="font-size:130%;">Responsibilities</span>
+                <br>-<br>-<br>-</div>
+        </div>
+        <div class="" style="width:100%;height:21%">
+            <div class="m-2 ml-5" contenteditable="true" style="width:90%;height:96%">
+                <span style="font-size:130%;">Skills &amp; Qualifications</span>
+                <br />The ideal candidate's personality, skills, and qualifications<br>-<br>-<br>-
+            </div>
+        </div>
+    </div>
+</main>
+
+<ng-template #sampleJobAdvertTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Job Adverts - {{sampleJobAdvertModalAdvertiser.company}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sampleJobAdvertModal.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-sample-job-adverts [jobTitle]="title" [topAdvertiser]="sampleJobAdvertModalAdvertiser">
+        </app-sample-job-adverts>
+    </div>
+</ng-template>
