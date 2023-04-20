@@ -1,0 +1,91 @@
+<div class="p-4">
+  <div class="card" [style.display]="!regionData?'none':'inherit'" [@fade]>
+    <h4 class="card-title pt-3 pl-3">
+      Total jobs in {{regionData?.name}}
+      <div class="btn-group">
+        <button class="btn btn-sm" tooltip="View Monthly" [class.btn-outline-danger]="datePeriodMode !== 'monthly'" [class.btn-danger]="datePeriodMode === 'monthly'" (click)="datePeriodMode = 'monthly'; update()">Monthly</button>
+        <button class="btn btn-sm" tooltip="View Weekly" [class.btn-outline-danger]="datePeriodMode !== 'weekly'" [class.btn-danger]="datePeriodMode === 'weekly'" (click)="datePeriodMode = 'weekly'; update()">Weekly</button>
+      </div>
+    </h4>
+    <div class="chart-wrapper pb-3">
+      <div #container class="chart-container">
+        <ngx-charts-area-chart-stacked
+          *ngIf="chartData && chartData[0]?.series?.length"
+          [results]="chartData"
+          [legend]="false"
+          [showXAxisLabel]="chartOptions.showXAxisLabel"
+          [showYAxisLabel]="chartOptions.showYAxisLabel"
+          [xAxis]="chartOptions.xAxis"
+          [yAxis]="chartOptions.yAxis"
+          [xAxisLabel]="chartOptions.xAxisLabel"
+          [yAxisLabel]="chartOptions.yAxisLabel"
+          [timeline]="chartOptions.timeline"
+          [animations]="chartOptions.animations"
+          [scheme]="chartScheme"
+          [view]="[container2.offsetWidth, 500]">
+        </ngx-charts-area-chart-stacked>
+        <div class="alert alert-warning mx-4 my-2" *ngIf="chartData && !chartData[0]?.series?.length">There is no data to show for the specified search terms.</div>
+      </div>    
+    </div>
+  </div>
+  
+  <div class="card my-3" [style.display]="!regionData?'none':'inherit'" [@fade]>
+    <h4 class="card-title pt-3 pl-3">Top ten jobs by 
+      <span *ngIf="groupBy === 'category'">sector</span>
+      <span *ngIf="groupBy === 'merged_title'">occupation</span>
+      in {{regionData?.name}}
+      <div class="btn-group mr-2">
+        <button class="btn btn-sm" tooltip="View #" [class.btn-outline-danger]="sectorChartMode !== 0" [class.btn-danger]="sectorChartMode === 0" (click)="sectorChartMode = 0">#</button>
+        <button class="btn btn-sm" tooltip="View %" [class.btn-outline-danger]="sectorChartMode !== 1" [class.btn-danger]="sectorChartMode === 1" (click)="sectorChartMode = 1">%</button>
+      </div>
+      <div class="btn-group mr-2">
+        <button class="btn btn-sm" tooltip="View Monthly" [class.btn-outline-danger]="datePeriodMode !== 'monthly'" [class.btn-danger]="datePeriodMode === 'monthly'" (click)="setDatePeriodMode('monthly')">Monthly</button>
+        <button class="btn btn-sm" tooltip="View Weekly" [class.btn-outline-danger]="datePeriodMode !== 'weekly'" [class.btn-danger]="datePeriodMode === 'weekly'" (click)="setDatePeriodMode('weekly')">Weekly</button>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-sm" tooltip="Group by Sector" [disabled]="!groupByEnabled" [class.btn-outline-danger]="groupBy !== 'category'" [class.btn-danger]="groupBy === 'category'" (click)="setGroupBy('category')">
+          <span *ngIf="!sicCode">Sector</span>
+          <span *ngIf="sicCode">Sic Code</span>
+        </button>
+        <button class="btn btn-sm" tooltip="Group by Occupation" [disabled]="!groupByEnabled" [class.btn-outline-danger]="groupBy !== 'merged_title'" [class.btn-danger]="groupBy === 'merged_title'" (click)="setGroupBy('merged_title')">
+          Occupation
+        </button>
+      </div>
+    </h4>
+    <div class="chart-wrapper pb-3">
+      <div #container2 class="chart-container">
+        <ngx-charts-area-chart-stacked
+          *ngIf="sectorChartData && sectorChartData[0]?.series?.length && sectorChartMode === 0"
+          [results]="sectorChartData"
+          [legend]="chartOptions.legend"
+          [showXAxisLabel]="chartOptions.showXAxisLabel"
+          [showYAxisLabel]="chartOptions.showYAxisLabel"
+          [xAxis]="chartOptions.xAxis"
+          [yAxis]="chartOptions.yAxis"
+          [xAxisLabel]="chartOptions.xAxisLabel"
+          [yAxisLabel]="chartOptions.yAxisLabel"
+          [timeline]="chartOptions.timeline"
+          [animations]="chartOptions.animations"
+          [scheme]="sectorChartScheme"
+          [view]="[container2.offsetWidth, 500]">
+        </ngx-charts-area-chart-stacked>
+        <ngx-charts-area-chart-normalized 
+          *ngIf="sectorChartData && sectorChartData[0]?.series?.length && sectorChartMode === 1"
+          [results]="sectorChartData"
+          [legend]="chartOptions.legend"
+          [showXAxisLabel]="chartOptions.showXAxisLabel"
+          [showYAxisLabel]="chartOptions.showYAxisLabel"
+          [xAxis]="chartOptions.xAxis"
+          [yAxis]="chartOptions.yAxis"
+          [xAxisLabel]="chartOptions.xAxisLabel"
+          [yAxisLabel]="chartOptions.yAxisLabel"
+          [timeline]="chartOptions.timeline"
+          [animations]="chartOptions.animations"
+          [scheme]="sectorChartScheme"
+          [view]="[container2.offsetWidth, 500]">
+        </ngx-charts-area-chart-normalized>
+        <div class="alert alert-warning mx-4 my-2" *ngIf="sectorChartData && !sectorChartData[0]?.series?.length">There is no data to show for the specified search terms.</div>
+      </div>    
+    </div>
+  </div>
+</div>

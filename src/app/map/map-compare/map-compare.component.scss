@@ -1,0 +1,86 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+.badge {
+    display: inline-block;
+    padding: .40em .80em .60em .60em;
+    margin-bottom: .35em;
+    margin-left: .25em;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0rem;
+    font-weight:400;
+    font-size:75%;
+}
+.tag-description {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.btn-outline-warning {
+    &:hover, &:focus {
+        color: #f0ad4e;
+        background-image: none;
+        background-color: transparent;
+        border-color: #f0ad4e;
+    }
+}
+.btn-warning {
+    &:hover, &:focus {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #f0ad4e;
+    }
+}
+strong, a {
+    color: $danger;
+}
+.kb-down-arr {
+    font-size: 2rem;
+}
+.map-options {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-title button {
+    color: $danger;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 2rem;
+    top: 1.2rem;
+    position: absolute;
+}
+
+.map-column
+{
+    min-height: calc(100vh - 150px);
+}
+
+#nuts-select
+{
+    flex: 1 1;
+}
+
+@include media-breakpoint-down(sm) {
+    .map-options-expander {
+        margin-bottom: 2px;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .btn-group {
+        display: block;
+    }
+
+    .btn-group > .btn {
+        margin: 2px;
+    }
+    .options-btn {
+        width: 7rem;
+    }
+}

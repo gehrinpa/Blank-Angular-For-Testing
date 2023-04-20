@@ -1,0 +1,22 @@
+<div class="card h-100">
+    <h3 class="card-header map-header">{{mapHeader}}</h3>
+    <app-map [itemNo]="itemNo" [heatMapEnabled]="heatMapEnabled" [regionType]="regionType" [choroplethEnabled]="choroplethEnabled" (mapLoaded)="mapLoaded.emit($event)"
+        (layerDataChanged)="setData($event)" class="h-100"></app-map>
+
+    <div class="card-body region-data" [@fade] *ngIf="choroplethEnabled">
+        <h4 class="card-title"> Region data <button (click)="regionDataCollapsed = !regionDataCollapsed"><i class="material-icons kb-down-arr">keyboard_arrow_down</i></button></h4>
+        <div id="region-data" class="collapse in" [collapse]="regionDataCollapsed">
+            <alert type="info" *ngIf="!regionData" [@fade]>Click a region to see details</alert>
+            <div *ngIf="regionData" [@fade]>
+                <h6>{{regionData.name}}: <span class="badge badge-secondary">{{regionData.count}}</span></h6>
+            </div>
+            <div *ngIf="skills" [@fade]>
+                <ng-container *ngFor="let skill of skills; let i = index">
+                    <span *ngIf="skill.description" class="badge badge-danger tag-description" rel="tooltip" tooltip="{{skill.description}}">{{skill.name}}</span>
+                    <span *ngIf="!skill.description" class="badge badge-danger">{{skill.name}}</span>
+                    &ngsp;
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

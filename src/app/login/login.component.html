@@ -1,0 +1,17 @@
+<main class="container-fluid">
+    <div class="row justify-content-center">
+        <br />
+        <div class="col-md-4">
+            <form class="card" (ngSubmit)="login()">
+                <div class="card-body">
+                    <h3 class="card-title">Login</h3>
+                    <p class="card-text">Please login to access this content</p>
+                    <alert *ngIf="error" type="danger" [@fade]>{{error}}</alert>
+                    <input class="form-control" [(ngModel)]="username" name="username" placeholder="Email address" />
+                    <input class="form-control" [(ngModel)]="password" name="password" type="password" placeholder="Password" />
+                    <button class="btn btn-outline-danger" [disabled]="isLoggingIn">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

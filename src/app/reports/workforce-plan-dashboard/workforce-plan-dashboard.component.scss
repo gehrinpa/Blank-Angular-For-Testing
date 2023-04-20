@@ -1,0 +1,15 @@
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+    & form,
+    & .form-control {
+        flex-grow: 1;
+    }
+}
+
+
+.chart {
+    height: 300px;
+}

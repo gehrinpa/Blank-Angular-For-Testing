@@ -1,0 +1,31 @@
+.full-height-column
+{
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+}
+
+.full-height-column .btn-group
+{
+    flex-shrink: 0;
+}
+
+.left-graph
+{
+    flex-grow: 1;
+    flex-shrink: 0;
+    max-height: 50%;
+}
+
+app-graph-map
+{
+    flex-grow: 1;
+}
+
+.map-alert
+{
+    position: absolute;
+    z-index: 2000;
+    top: 10px;
+    left: 60px;
+    right: 25px;
+}

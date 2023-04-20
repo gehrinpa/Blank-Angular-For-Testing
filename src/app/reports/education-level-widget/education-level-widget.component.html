@@ -1,0 +1,15 @@
+<div class="card mb-2">
+    <div class="card-body">
+        <h5 class="card-title">Education Summary</h5>
+        <table class="table table-sm">
+            <ng-container *ngFor = "let level of levels">
+                <tr>
+                    <td>
+                        L{{level.level}}
+                    </td>
+                    <td>{{level.count}}</td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</div>

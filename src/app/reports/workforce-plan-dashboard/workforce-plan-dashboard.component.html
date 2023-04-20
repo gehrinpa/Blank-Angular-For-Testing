@@ -1,0 +1,66 @@
+<div class="fixed-head-wrapper">
+    <header class="navbar">
+        <form class="form-inline">
+            <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+            <label *ngIf="jobFamilies" for="filter-family" class="mx-2">Job Family: </label>
+            <select *ngIf="jobFamilies" id="filter-family" class="form-control custom-select my-2 mr-2" name="jobFamily" [(ngModel)]="jobFamilyFilter" (change)="updateFilters()">
+                <option value="">All</option>
+                <option *ngFor="let family of jobFamilies">{{family}}</option>
+            </select>
+            <label *ngIf="areas" for="filter-area" class="mx-2">Functional Area: </label>
+            <select *ngIf="areas" id="filter-area" class="form-control custom-select my-2 mr-2" name="functionalArea" [(ngModel)]="functionalAreaFilter" (change)="updateFilters()">
+                <option value="">All</option>
+                <option *ngFor="let area of areas">{{area}}</option>
+            </select>
+        </form>
+        <div class="btn-group mr-2" data-toggle="buttons">
+            <label class="btn btn-outline-danger mb-0" [(ngModel)]="dateGroup" btnRadio="month" (ngModelChange)="dateGroupingChanged()">
+                Month
+            </label>
+            <label class="btn btn-outline-danger mb-0" [(ngModel)]="dateGroup" btnRadio="quarter" (ngModelChange)="dateGroupingChanged()">
+                Quarter
+            </label>
+        </div>
+
+        <a *ngIf="plan" [routerLink]="['/data-entry/workforce-planning/edit', plan.id]" class="btn btn-outline-danger my-2">View Plan</a>
+    </header>
+
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-3" *ngFor="let chart of jobFamilyByYearPies">
+                        <h2>{{chart.label}}</h2>
+                        <div class="chart">
+                            <ngx-charts-pie-chart scheme="flame" [results]="chart.data" [doughnut]="true" [tooltipText]="getPieTooltip"></ngx-charts-pie-chart>
+                        </div>
+                    </div>
+                </div>
+                <h2>Total Workforce by Year</h2>
+                <div *ngIf="jobFamiliesByYearBar.length" [style.height.px]="jobFamiliesByYearBar.length * 75">
+                    <ngx-charts-bar-horizontal-2d scheme="flame" [results]="jobFamiliesByYearBar" [xAxis]="true" [yAxis]="true" [legend]="true" [barPadding]="4" [groupPadding]="8"></ngx-charts-bar-horizontal-2d>
+                </div>
+
+                <h2>Planned Recruitment by Year</h2>
+                <div *ngIf="jobFamilyRecruitmentByYearBar.length" [style.height.px]="jobFamilyRecruitmentByYearBar.length * 75">
+                    <ngx-charts-bar-horizontal-2d scheme="flame" [results]="jobFamilyRecruitmentByYearBar" [xAxis]="true" [yAxis]="true" [legend]="true" [barPadding]="4" [groupPadding]="8"></ngx-charts-bar-horizontal-2d>
+                </div>
+
+                <h2>Job Ads by {{dateGroup[0].toUpperCase()}}{{dateGroup.substr(1)}}</h2>
+                <div class="chart" *ngIf="jobAdsOverTimeChart.length">
+                    <ngx-charts-line-chart scheme="flame" [results]="jobAdsOverTimeChart" [xAxis]="true" [yAxis]="true" [legend]="true" [autoScale]="true"></ngx-charts-line-chart>
+                </div>
+
+                <h2>Salary by {{dateGroup[0].toUpperCase()}}{{dateGroup.substr(1)}}</h2>
+                <div class="chart" *ngIf="salaryOverTimeChart.length">
+                    <ngx-charts-line-chart scheme="flame" [results]="salaryOverTimeChart" [xAxis]="true" [yAxis]="true" [legend]="true" [autoScale]="true"></ngx-charts-line-chart>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <app-education-level-widget></app-education-level-widget>
+                <app-title-count-widget [sectorId]="plan?.sectorId" [companyId]="plan?.companyId" [jobFamilies]="jobFamilies"></app-title-count-widget>
+                <app-salary-widget [sectorId]="plan?.sectorId" [companyId]="plan?.companyId" [jobFamilies]="jobFamilies"></app-salary-widget>
+            </div>
+        </div>
+    </main>
+</div>

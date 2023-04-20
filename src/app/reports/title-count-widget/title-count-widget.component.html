@@ -1,0 +1,23 @@
+<div class="card mb-2">
+    <div class="card-body">
+        <h5 class="card-title">Job Advert Summary</h5>
+        <table class="table table-sm">
+            <ng-container *ngFor = "let familyCount of familyCounts">
+                <tr>
+                    <td>
+                        <a href="#" (click)="familyExpanded[familyCount.title] = !familyExpanded[familyCount.title]; false">{{familyCount.title}}</a>
+                    </td>
+                    <td>{{familyCount.count}}</td>
+                </tr>
+                <ng-container *ngIf="familyExpanded[familyCount.title]">
+                    <ng-container *ngFor="let titleCount of titleCounts">
+                        <tr class="table-secondary" *ngIf="titleToFamily[titleCount.title] == familyCount.title">
+                            <td>{{titleCount.title}}</td>
+                            <td>{{titleCount.count}}</td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </table>
+    </div>
+</div>

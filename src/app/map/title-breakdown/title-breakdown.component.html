@@ -1,0 +1,111 @@
+<div class="m-4 p-2 card" [style.display]="!regionData || !dateRangeQuarter?'none':'block'" [@fade]>
+    <ng-container *ngIf="regionData && dateRangeQuarter">
+        <div class="card-body" *ngIf="regionData">
+            <h5 class="card-title">{{regionData.name}}
+                <span class="badge badge-primary" *ngIf="regionData.count">{{regionData.count}} Jobs</span>
+                <span class="float-right">
+                    <button class="md-24 btn btn-outline-danger mr-2" (click)="resetZoom()">Reset Zoom</button>
+                    <button class="material-icons md-24 btn btn-outline-danger mr-2"
+                        (click)="logLin()">bubble_chart</button>
+                    <div class="btn-group mr-3" data-toggle="buttons">
+                        <label class="material-icons md-24 btn btn-outline-danger mb-0" (click)="mapViewChange(true)"
+                            [(ngModel)]="dataTypeDisplay" btnRadio="ListForm">
+                            format_list_bulleted
+                        </label>
+                        <label class="material-icons md-24 btn btn-outline-danger mb-0" (click)="mapViewChange(false)"
+                            [(ngModel)]="dataTypeDisplay" btnRadio="GraphForm">
+                            insert_chart_outlined
+                        </label>
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="container pb-3">
+            <canvas id="myChart" name="myChart"></canvas>
+        </div>
+        <ul class="title-list list-group list-group-flush"
+            *ngIf="regionData && regionData.merged_titles && dataTypeDisplay == 'ListForm'" [@fade]>
+            <li class="list-group-item head summary-row">
+                <div class="title">Title</div>
+                <div class="count">Count</div>
+            </li>
+            <li class="list-group-item" *ngFor="let title of jobTitles">
+                <div class="summary-row">
+                    <div class="title">{{title}}</div>
+                    <a href="" (click)="titleDataExpanded[title] = !titleDataExpanded[title]; false">
+                        <i *ngIf="!titleDataExpanded[title]&&!this.categories.includes('all-sectors')"
+                            class="material-icons">keyboard_arrow_down</i>
+                        <i *ngIf="titleDataExpanded[title]" class="material-icons">keyboard_arrow_up</i>
+                    </a>
+                    <div class="count">{{regionData.merged_titles[title]}}</div>
+                </div>
+                <div class="border-top details" [collapse]="!titleDataExpanded[title]" (expanded)="getTitleData(title)">
+                    <div class="btn-group d-flex" data-toggle="buttons">
+                        <label class="btn btn-outline-danger mb-0" [(ngModel)]="titleDataSection" btnRadio="skills">
+                            Skills
+                        </label>
+                        <label class="btn btn-outline-danger mb-0" [(ngModel)]="titleDataSection" btnRadio="salary">
+                            Salary
+                        </label>
+                        <label class="btn btn-outline-danger mb-0" [(ngModel)]="titleDataSection" btnRadio="employers">
+                            Advertisers
+                        </label>
+                    </div>
+                    <ng-container *ngIf="titleDataSection == 'employers'"> <!--TODO: Top Employers Module-->
+                        <app-top-advertisers
+                            [jobTitle]="title" 
+                            [titleField]="getTitleField()"
+                            [startDate]="startDate" 
+                            [allowedTitles]="getAllowedTitles()"
+                            [endDate]="endDate" 
+                            [regionCode]="regionCode"
+                            [regionType]="searchParams.regionType"
+                        ></app-top-advertisers>
+                    </ng-container>
+                    <ng-container *ngIf="titleDataSection == 'skills'">
+                        Top Skills - Relevance Score
+                        <app-graph-map [items]="titleSkillData[title]" bars="horizontal" height="350"
+                            [relativeScaleButton]="false"></app-graph-map>
+                    </ng-container>
+                    <div class="row" *ngIf="titleDataSection == 'salary' && titleSalary[title]">
+                        <div class="col-md-7">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <th>Annual Salary</th>
+                                    <td>
+                                        <ng-container *ngIf="titleSalary[title]['year']">
+                                            £{{titleSalary[title]['year'].min_avg.toFixed(2)}} -
+                                            £{{titleSalary[title]['year'].max_avg.toFixed(2)}}
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Day Rate</th>
+                                    <td>
+                                        <ng-container *ngIf="titleSalary[title]['day']">
+                                            £{{titleSalary[title]['day'].min_avg.toFixed(2)}} -
+                                            £{{titleSalary[title]['day'].max_avg.toFixed(2)}}
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Hourly Rate</th>
+                                    <td>
+                                        <ng-container *ngIf="titleSalary[title]['hour']">
+                                            £{{titleSalary[title]['hour'].min_avg.toFixed(2)}} -
+                                            £{{titleSalary[title]['hour'].max_avg.toFixed(2)}}
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-5 chart-col">
+                            <ngx-charts-pie-chart scheme="flame" [results]="titleSalaryChart[title]" [labels]="true"
+                                [doughnut]="true"></ngx-charts-pie-chart>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </ng-container>
+</div>

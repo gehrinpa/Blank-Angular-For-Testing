@@ -1,0 +1,50 @@
+<app-search-compare-header [searchOptions]="searchOptions"></app-search-compare-header>
+<main class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 full-height-column mb-2 d-flex flex-column">
+            <h2>Search filters</h2>
+            <div class="btn-group mb-2" data-toggle="buttons">
+                <label class="btn btn-outline-danger  mb-0" [(ngModel)]="mode" btnRadio="people" (click)="peopleClicked()">
+                    People
+                </label>
+                <label class="btn btn-outline-danger  mb-0" [(ngModel)]="mode" btnRadio="jobs" (click)="jobsClicked()">
+                    Jobs
+                </label>
+                <!--<label class="btn btn-outline-danger mb-0" [(ngModel)]="mode" btnRadio="education">
+                    Education
+                </label>-->
+            </div>
+            <input *ngIf="mode != 'jobs'" class="form-control mb-2" placeholder="job title" [(ngModel)]="jobTitle" (ngModelChange)="onJobTitleChanged($event)">
+            <h3 *ngIf="mode == 'jobs'">Keywords:</h3>
+            <input *ngIf="mode == 'jobs'" class="form-control mb-2" placeholder="javascript, html" [(ngModel)]="keywords" (ngModelChange)="onSkillChanged($event)">
+            <input *ngIf="mode != 'jobs'" class="form-control mb-2" placeholder="skill" [(ngModel)]="skill" (ngModelChange)="onSkillChanged($event)">
+
+            <h2>Results</h2>
+            <div class="left-graph card mb-2" *ngIf="regionsGraphItems.length != 0">
+                <div class="card-body d-flex flex-column">
+                    <h4 class="card-title">Top regions</h4>
+                    <app-graph-map [items]="regionsGraphItems" bars="horizontal" [relativeScaleButton]="false"></app-graph-map>
+                </div>
+            </div>
+            <div class="card" *ngIf="mode == 'people'" [@fade]>
+                <div class="card-body">
+                    <alert type="info" [@fade]>No details of people can be shared within Insights</alert>
+                </div>
+            </div>
+
+            <div class="card" *ngIf="mode == 'jobs' && !jobs.length" [@fade]>
+                <div class="card-body">
+                    <alert type="info" [@fade]>Select a region to display jobs</alert>
+                </div>
+            </div>
+            <div *ngIf="mode == 'jobs' && jobs.length" >
+                <app-job-list [title]="jobListTitle" [subtitle]="jobLocation" [jobs]="jobs" [totalItems]="jobCount" (pageChanged)="onJobPageChanged($event)"></app-job-list>
+            </div>
+        </div>
+
+        <div class="col-md-6 full-height-column mb-2">
+            <alert type="info" class="map-alert" [@fade] *ngIf="mode == 'jobs' && !jobs.length">Select a region</alert>
+            <app-map [itemNo]="1" [heatMapEnabled]="false" [regionType]="nutsLevel" [choroplethEnabled]="true" [dataSource]="mode" (choroplethChanged)="onChoroplethChanged($event)" [searchParams]="mapSearchParams" (layerDataChanged)="onMapRegionChanged($event)"></app-map>
+        </div>
+    </div>
+</main>

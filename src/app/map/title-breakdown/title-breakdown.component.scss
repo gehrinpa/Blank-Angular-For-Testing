@@ -1,0 +1,39 @@
+.title-list {
+    & .summary-row {
+        display: flex;
+        & > a {
+            height: 1.5em;
+        }
+    }
+
+    & > li {
+
+        /*stripes*/
+        &:nth-child(2n) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        &.head {
+            font-weight: bold;
+        }
+
+        & .title {
+            flex-grow: 1;
+        }
+
+        & .count {
+            width: 5em;
+        }
+
+        & .details {
+            margin: 0.5rem -1.25rem 0;
+            padding: 0 1.25rem;
+        }
+    }
+}
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+.ngx-charts text { fill: #000; }

@@ -1,0 +1,37 @@
+<app-search-compare-header></app-search-compare-header>
+<main class="container-fluid">
+    <div class="card mb-2">
+        <div class="card-body p-2">
+            <div class="row">
+                <div class="col-sm-12 col-md d-flex align-items-center flex-wrap">
+                    <p class="card-text mb-2 mr-2">Map options: </p>
+                    <div class="btn-group">
+                        <button type="button" class="btn options-btn" [class.btn-danger]="heatMapEnabled" [class.btn-outline-danger]="!heatMapEnabled"
+                            (click)="heatMapEnabled = !heatMapEnabled">Heatmap</button>
+                        <button type="button" class="btn options-btn" [class.btn-danger]="choroplethEnabled" [class.btn-outline-danger]="!choroplethEnabled"
+                            (click)="choroplethEnabled = !choroplethEnabled">Choropleth</button>
+                        <button type="button" class="btn options-btn" [class.btn-danger]="syncMaps" [class.btn-outline-danger]="!syncMaps" (click)="syncMaps = !syncMaps">Sync Maps</button>
+                    </div>
+                    <div class="col-sm-12 col-md d-flex align-items-center flex-wrap">
+                        <label class="label mr-2">Nuts regions level: </label>
+                        <select id="nuts-select" class="form-control custom-select" [ngModel]="nutsLevel" (ngModelChange)="changeNuts($event)">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 map-column mb-2">
+            <app-map-region-data [itemNo]="1" [heatMapEnabled]="heatMapEnabled" [regionType]="nutsLevel" [choroplethEnabled]="choroplethEnabled" (mapLoaded)="mapsLoaded($event)"></app-map-region-data>
+        </div>
+
+        <div class="col-md-6 map-column mb-2">
+            <app-map-region-data [itemNo]="2" [heatMapEnabled]="heatMapEnabled" [regionType]="nutsLevel" [choroplethEnabled]="choroplethEnabled" (mapLoaded)="mapsLoaded($event)"></app-map-region-data>
+        </div>
+    </div>
+</main>

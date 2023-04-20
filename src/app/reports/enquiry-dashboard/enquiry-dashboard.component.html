@@ -1,0 +1,48 @@
+<div class="fixed-head-wrapper">
+    <header class="navbar">
+        <form class="form-inline">
+            <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+            <label for="filter-sector" class="mr-2">Sector: </label>
+            <input id="filter-sector" class="form-control my-2" type="text" name="sector" placeholder="Sector Name" autocomplete="off" [(ngModel)]="sectorFilterText" [typeahead]="sectorTypeahead" typeaheadOptionField="name" typeaheadMinLength="3" (typeaheadOnSelect)="sectorSelected($event)" (change)="sectorChange()"/>
+        </form>
+        <div class="btn-group ml-2" data-toggle="buttons">
+            <label class="btn btn-outline-danger mb-0" [(ngModel)]="dateGroup" btnRadio="month" (ngModelChange)="dateGroupingChanged()">
+                Month
+            </label>
+            <label class="btn btn-outline-danger mb-0" [(ngModel)]="dateGroup" btnRadio="quarter" (ngModelChange)="dateGroupingChanged()">
+                Quarter
+            </label>
+        </div>
+    </header>
+
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h2>Enquiry Summary</h2>
+                        <div class="chart">
+                            <ngx-charts-pie-chart scheme="flame" [results]="enquirySummaryChartData" [labels]="true" [doughnut]="true"></ngx-charts-pie-chart>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <h2>Total Enquiries by Month</h2>
+                        <div class="chart">
+                            <ngx-charts-bar-vertical-2d scheme="flame" [results]="enquiriesByMonthChartData" [xAxis]="true" [yAxis]="true" [legend]="true" [barPadding]="2" [groupPadding]="4"></ngx-charts-bar-vertical-2d>
+                        </div>
+                    </div>
+                </div>
+                <h2>Potential Headcount by Enquiry</h2>
+                <div class="chart">
+                    <ngx-charts-bar-vertical-2d scheme="flame" [results]="headcountByEnquiryChartData" [xAxis]="true" [yAxis]="true" [legend]="true" [barPadding]="2" [groupPadding]="4"></ngx-charts-bar-vertical-2d>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <app-education-level-widget></app-education-level-widget>
+                <app-title-count-widget [sectorId]="selectedSector?.id"></app-title-count-widget>
+                <app-salary-widget [sectorId]="selectedSector?.id"></app-salary-widget>
+            </div>
+        </div>
+    </main>
+</div>

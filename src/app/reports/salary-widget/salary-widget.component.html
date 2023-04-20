@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Salary Summary</h5>
+        <table class="table table-sm">
+            <ng-container *ngFor = "let familySalary of familySalaries">
+                <tr>
+                    <td>
+                        <a href="#" (click)="familyExpanded[familySalary.merged_title] = !familyExpanded[familySalary.merged_title]; false">{{familySalary.merged_title}}</a>
+                    </td>
+                    <td>£{{familySalary.min_avg.toFixed(2)}} - £{{familySalary.max_avg.toFixed(2)}}</td>
+                </tr>
+                <ng-container *ngIf="familyExpanded[familySalary.merged_title]">
+                    <ng-container *ngFor="let salary of salaries">
+                        <tr class="table-secondary" *ngIf="titleToFamily[salary.merged_title] == familySalary.merged_title">
+                            <td>{{salary.merged_title}}</td>
+                            <td>£{{salary.min_avg.toFixed(2)}} - £{{salary.max_avg.toFixed(2)}}</td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </table>
+    </div>
+</div>

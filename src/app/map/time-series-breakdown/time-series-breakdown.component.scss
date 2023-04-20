@@ -1,0 +1,13 @@
+.chart-wrapper {
+    .chart-container {
+        height: 440px;
+        overflow: hidden;
+        &.with-legend {
+            height: 700px;
+        }
+    }
+}
+
+// :host ::ng-deep .ngx-charts {
+//     margin-bottom: -80px;
+// }

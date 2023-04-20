@@ -1,0 +1,110 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" (click)="navbar = !navbar" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse" [class.show]="navbar">
+        <div class="d-flex flex-wrap align-items-center justify-content-end jusify-content-md-start">
+            <ng-select 
+                id="dimension-input"
+                bindLabel="value"
+                bindValue="key"
+                groupBy="group"
+                (change)="search()"
+                [items]="categories" 
+                [multiple]="true"
+                [closeOnSelect]="true"
+                [selectableGroup]="true"
+                [compareWith]="comparator"
+                [loading]="loading"
+                [(ngModel)]="selectedCategories"
+                placeholder="Select a category...">
+                <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"/> {{item.group === 'all-sectors' ? 'All sectors' : item.group}}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"/> {{item.value}}
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                    <div class="ng-value" *ngFor="let item of items | slice:0:2">
+                        <span class="ng-value-icon left" (click)="clear(item)" aria-hidden="true">×</span>
+                        <span class="ng-value-label">{{item.value ? item.value : (item.group === 'all-sectors' ? 'All sectors' : item.group)}}</span>
+                    </div>
+                    <div class="ng-value" *ngIf="items.length > 2">
+                        <span class="ng-value-label">{{items.length - 2}} more...</span>
+                    </div>
+                </ng-template>
+                <ng-template ng-loadingspinner-tmp>
+                    <div class="sk-wave amplifi">
+                        <div class="sk-rect sk-rect1"></div>
+                        <div class="sk-rect sk-rect2"></div>
+                        <div class="sk-rect sk-rect3"></div>
+                        <div class="sk-rect sk-rect4"></div>
+                        <div class="sk-rect sk-rect5"></div>
+                    </div>
+                </ng-template>
+            </ng-select>
+            <!-- <header style="margin-left:1rem;" class="navbar bg-white navbar-expand-lg py-2 pr-0">
+                <input class="form-check-input" type="checkbox" id="sicCodeSearch"[(ngModel)]="useSicCode" [disabled]="!canUseSicCode" (ngModelChange)="SicCodeChecked()">
+                <label class="form-check-label" for="sicCodeSearch">use SIC?</label>
+            </header> -->
+            <header style="margin-left:1rem;" class="navbar bg-white navbar-expand-lg py-2 pr-0">
+                <mat-slide-toggle [color]="'accent'" [checked]="useSicCode" (change)="SicCodeChecked()">
+                    <span *ngIf="!useSicCode">Non-SIC code</span>
+                    <span *ngIf="useSicCode">SIC code</span>
+                </mat-slide-toggle>
+            </header>
+            <header class="navbar bg-white navbar-expand-lg py-2">
+                <div class="d-flex align-items-center">
+                    <button *ngIf="regionData?.name" (click)="chooseLocation()" class="btn btn-outline-danger">Change location ({{regionData?.dataKey}})</button>
+                    <button *ngIf="!regionData?.name" (click)="chooseLocation()" class="btn btn-outline-danger">Choose location</button>
+                </div>
+            </header>
+            <header class="navbar bg-white navbar-expand-lg py-2">
+                <select class="form-control custom-select" [(ngModel)]="dateRangeYear" [ngModelOptions]="{standalone: true}" (change)="dateRangeYearChanged()">
+                    <option *ngFor="let year of dateRangeValidYears" value="{{year}}">{{year}}</option>
+                </select>
+            </header>
+            <header class="navbar bg-white navbar-expand-lg py-2">
+                <button class="btn btn-outline-danger form-control my-2" (click)="search()">Search</button>
+            </header>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid">
+    <div class="card mt-4" *ngIf="!regionData">
+        <div class="card-body">
+            <alert type="info">Select a region to display breakdown</alert>
+        </div>
+    </div>
+
+    <tabset class="d-block my-4" *ngIf="regionData">
+        <tab heading="Trend">
+            <app-time-series-breakdown [categories]="selectedCategories" [searchParams]="searchParams" [regionData]="regionData" [year]="dateRangeYear" [sicCode]="useSicCode"></app-time-series-breakdown>
+        </tab>
+        <tab heading="Detail" (select)="redrawMap()">
+            <form class="form-inline m-4">
+                <div class="form-group">
+                    <label for="quarter">Quarter: </label>
+                    <select class="form-control custom-select ml-3" [(ngModel)]="dateRangeQuarter"
+                        [ngModelOptions]="{standalone: true}" (change)="dateRangeChanged()" name="quarter">
+                        <option value="1" [disabled]="!canDisplayQuarter(1)">Q1</option>
+                        <option value="2" [disabled]="!canDisplayQuarter(2)">Q2</option>
+                        <option value="3" [disabled]="!canDisplayQuarter(3)">Q3</option>
+                        <option value="4" [disabled]="!canDisplayQuarter(4)">Q4</option>
+                        <!-- Re-enable commented out code -->
+                        <!-- <option value="4">Q4</option> -->
+                    </select>
+                </div>
+            </form>
+            <div class="row">
+                <div [class.col-md-6]="canViewMap()" [class.col-md-12]="!canViewMap()">
+                    <app-title-breakdown #titles [categories]="selectedCategories" [year]="dateRangeYear" [dateRangeQuarter]="dateRangeQuarter" [regionData]="regionData" [searchParams]="searchParams" [sicCode]="useSicCode"></app-title-breakdown>
+                </div>
+                <div class="col-md-6 full-height-column mb-2" [style.display]="inFullScreen()||canViewMap()?'block':'none'">
+                    <app-map #map [categories]="selectedCategories" itemNo="1" [heatMapEnabled]="false" [choroplethEnabled]="true" dataSource="jobs-la" [regionType]="searchParams.regionType" [searchParams]="searchParams" [sicCode]="useSicCode"></app-map>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</main>
