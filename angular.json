@@ -64,18 +64,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "geek-talent-insights-app:build"
+            "browserTarget": "blank-angular-for-testing:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "geek-talent-insights-app:build:production"
+              "browserTarget": "blank-angular-for-testing:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "geek-talent-insights-app:build"
+            "browserTarget": "blank-angular-for-testing:build"
           }
         },
         "test": {
@@ -114,7 +114,7 @@
         }
       }
     },
-    "geek-talent-insights-app-e2e": {
+    "blank-angular-for-testing-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -122,7 +122,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "geek-talent-insights-app:serve"
+            "devServerTarget": "blank-angular-for-testing:serve"
           }
         },
         "lint": {
@@ -137,7 +137,7 @@
       }
     }
   },
-  "defaultProject": "geek-talent-insights-app",
+  "defaultProject": "blank-angular-for-testing",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

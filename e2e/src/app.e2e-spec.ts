@@ -1,6 +1,6 @@
 import { GeekTalentInsightsAppPage } from './app.po';
 
-describe('geek-talent-insights-app App', function() {
+describe('blank-angular-for-testing App', function() {
   let page: GeekTalentInsightsAppPage;
 
   beforeEach(() => {

@@ -1,0 +1,85 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+#main-container {
+    flex-grow: 1;
+    min-width: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+nav {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+mdc-persistent-drawer-spacer {
+    text-align: center;
+}
+
+.sidebar-brand {
+    color: inherit;
+
+    &::before, &::after {
+        transition: transform .3s,opacity .2s;
+        color: #FFF;
+        font-size: 22px;
+        line-height: 16px;
+        display: inline-block;
+        opacity: 0;
+    }
+    &::before {
+        margin-right: 3px;
+        content: '<';
+        transform: translateX(50px);
+    }
+    &::after {
+        margin-left: 3px;
+        content: '>';
+        transform: translateX(-50px);
+    }
+    &:hover {
+        &::before, &::after {
+            opacity: 1;
+            transform: translateX(0px);
+        }
+    }
+}
+.sidebar-close {
+        margin-left: 1rem;
+        margin-top: 3rem;
+    }
+
+.navbar-toggler .material-icons
+{
+    line-height: 34px;
+}
+
+.nav-title
+{
+    line-height: 1em;
+    display: flex;
+    align-items: center;
+}
+
+@include media-breakpoint-down(sm) {
+    .nav-title{
+        margin-left: 0!important;
+    }
+    .mobile-title {
+        padding-left: .4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .sidebar-brand {
+        font-size: 1rem;
+    }
+}

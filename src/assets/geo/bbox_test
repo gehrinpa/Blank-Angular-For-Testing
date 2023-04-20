@@ -1,0 +1,13 @@
+var bbox = require('geojson-bbox');
+var feature = { 
+  type: 'Feature',
+  geometry: {
+    type: 'LineString', 
+    coordinates: [
+      [10, 40], [40, 30], [20, 20], [30, 10]
+    ]
+  }
+};
+var extent = bbox(feature); 
+// extent is array 
+// [10, 10, 40, 40]
