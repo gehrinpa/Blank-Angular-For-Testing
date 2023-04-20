@@ -1,0 +1,20 @@
+<main class="container-fluid">
+    <div class="card mt-2">
+        <div class="card-body" *ngIf="!creatingGroup">
+            <h4>Create New Group</h4>
+
+            <input type="text" class="form-control" id="groupName" name="groupName" required [(ngModel)]="groupName" placeholder="Group Name">
+
+            <div class="alert alert-danger" *ngIf="error.length > 0">
+                Unable to create a new group - {{error}}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-outline-danger" (click)="createGroup()">Create</button>
+            </div>
+        </div>
+        <div class="card-body" *ngIf="creatingGroup">
+            <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+        </div>
+    </div>
+</main>

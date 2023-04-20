@@ -1,0 +1,213 @@
+<header class="navbar">
+    <form class="form-inline">
+        <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+        <label *ngIf="areas" for="filter-area" class="mx-2">Functional Area: </label>
+        <select *ngIf="areas" id="filter-area" class="form-control custom-select my-2" name="functionalArea" [(ngModel)]="functionalAreaFilter">
+            <option value="">All</option>
+            <option *ngFor="let area of areas">{{area.name}}</option>
+        </select>
+    </form>
+</header>
+<main class="container-fluid">
+    <div class="card mb-2">
+        <div class="card-body p-2 d-flex flex-wrap">
+            <div class="input-group w-auto mr-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Import data</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upload-spreadsheet" (change)="spreadsheetFileChanged($event)" accept=".ods,.xlsx,.xls">
+                    <label class="custom-file-label" for="upload-spreadsheet">Choose file </label>
+                </div>
+            </div>
+            <button class="btn btn-outline-danger mr-2" (click)="exportSpreadsheet()">Export data</button>
+            <div class="flex-spacer"></div>
+            <span class="align-self-center" *ngIf="selectedPlan">
+                {{selectedPlan.companyName == null ? 'Sector' : 'Company'}}: {{selectedPlan.companyName || selectedPlan.sectorName}}
+            </span>
+
+            <button class="btn btn-outline-danger mx-2" (click)="saveChanges()">Save</button>
+            <a *ngIf="selectedPlan" [routerLink]="['/reports/workforce-plan-dashboard', selectedPlan.id]" class="btn btn-outline-danger">View Dashboard</a>
+        </div>
+    </div>
+
+    <div class="card mb-2" *ngIf="selectedPlan">
+        <div class="card-body p-2 row">
+            <div class="col-lg-4">
+                <div class="form-group row">
+                    <label for="plan-name" class="col-md col-form-label">Plan Name</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" id="plan-name" required [(ngModel)]="selectedPlan.name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="plan-target" class="col-md col-form-label">Target Date</label>
+                    <div class="col-md-9">
+                        <input type="date" class="form-control" id="plan-target" [(ngModel)]="targetDate">
+                    </div>
+                </div>
+            </div>
+
+            <!--description-->
+            <div class="col-lg">
+                <div class="form-group row">
+                    <label for="plan-description" class="col-md col-form-label">Description</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control" id="plan-description" [(ngModel)]="selectedPlan.description"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!--type/status-->
+            <div class="col-lg-3">
+                <div class="form-group row">
+                    <label for="plan-type" class="col-md col-form-label">Type</label>
+                    <div class="col-md-10 col-lg-9">
+                        <select id="plan-type" class="form-control custom-select" [(ngModel)]="selectedPlan.type">
+                            <option>Plan</option>
+                            <option>Scenario</option>
+                            <option>Enquiry</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="plan-status" class="col-md col-form-label">Status</label>
+                    <div class="col-md-10 col-lg-9">
+                        <select id="plan-status" class="form-control custom-select" [(ngModel)]="selectedPlan.status">
+                            <option>Live</option>
+                            <option>Draft</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--errors-->
+    <alert type="danger" *ngIf="errorData.length">
+        <ng-container *ngFor="let row of errorData">
+            <strong>{{row.title}}</strong>
+            <ul>
+                <li *ngFor="let error of row.errors">{{error}}</li>
+            </ul>
+            <hr>
+        </ng-container>
+    </alert>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th></th>
+                    <th>
+                        Functional Area<br/>
+                        Job Title
+                    </th>
+                    <th>
+                        Job Spec
+                    </th>
+                    <th>
+                        Job Family
+                    </th>
+                    <th>
+                        Key Skills
+                    </th>
+                    <th class="editable">
+                        Current<br/>
+                        Headcount
+                    </th>
+                    <th class="editable" *ngFor="let year of years">
+                        YE {{year}}
+                    </th>
+                    <th>
+                        Net Change<br/>
+                        ({{years[0]}}-{{years[years.length - 1]}})
+                    </th>
+                    <th class="editable">
+                        Forecast<br/>
+                        Attrition
+                    </th>
+                    <th>
+                        Total Hiring Demand<br/>
+                        (Change + Attrition)
+                    </th>
+                    <th class="editable">Internal</th>
+                    <th class="editable">Apprentice</th>
+                    <th class="editable">Graduate</th>
+                    <th class="editable">Experienced</th>
+                    <th class="editable">Contract</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let area of areas">
+                    <ng-container *ngIf="functionalAreaFilter == '' || functionalAreaFilter == area.name">
+                        <tr class="subheading">
+                            <td></td>
+                            <td class="no-wrap">{{area.name}}</td>
+                            <td><!--spec--></td>
+                            <td><!--family--></td>
+                            <td><!--skills--></td>
+                            <td class="editable">Step 1</td>
+                            <td class="editable" *ngFor="let year of years; index as i">Step {{2 + i}}</td>
+                            <td><!--net change--></td>
+                            <td class="editable">Step 5</td>
+                            <td><!--total hiring demand--></td>
+                            <td class="editable">Step 6</td>
+                            <td class="editable">Step 7</td>
+                            <td class="editable">Step 8</td>
+                            <td class="editable">Step 9</td>
+                            <td class="editable">Step 10</td>
+                        </tr>
+                        <tr *ngFor="let row of area.roles; index as i" [ngClass]="{'table-warning': row.modified, 'table-danger': row.errors, 'deleted': row.deleted}">
+                            <td class="actions">
+                                <a href='#' *ngIf="row.modified || row.deleted" (click)="revertRow(row); false"><i class="material-icons">undo</i></a>
+                                <a href='#' *ngIf="!row.deleted" (click)="row.deleted = true; false"><i class="material-icons text-danger">delete</i></a>
+                            </td>
+                            <td class="job-title"><input type="text" [(ngModel)]="row.title" (change)="rowChanged(row)"></td>
+                            <td>
+                                <div class="job-spec-edit">
+                                    <input type="text" [(ngModel)]="row.jobSpec" (change)="rowChanged(row)">
+                                    <a *ngIf="row.jobSpec" href="{{row.jobSpec}}"><i class="material-icons">link</i></a>
+                                </div>
+                            </td>
+                            <td class="job-title"><input type="text" [(ngModel)]="row.jobFamily" (change)="rowChanged(row)"></td>
+                            <td class="no-pad skills">
+                                <ng-select class="borderless stretch" multiple="true" [(ngModel)]="row.skills" [items]="skillItems | async" [typeahead]="skillSubject" (change)="rowChanged(row)"></ng-select>
+                            </td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.currentHeadcount" (change)="rowChanged(row)"></td>
+                            <td class="editable"*ngFor="let year of years; index as yi"><input type="number" min="0" [(ngModel)]="row['year' + (yi + 1) + 'Headcount']" (change)="rowChanged(row)"></td>
+                            <td>{{calcNetChange(row)}}</td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.forecastAttrition" (change)="rowChanged(row)"></td>
+                            <td>{{calcTotalHiringDemand(row)}}</td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.internal" (change)="rowChanged(row)"></td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.apprentice" (change)="rowChanged(row)"></td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.graduate" (change)="rowChanged(row)"></td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.experienced" (change)="rowChanged(row)"></td>
+                            <td class="editable"><input type="number" min="0" [(ngModel)]="row.contract" (change)="rowChanged(row)"></td>
+                        </tr>
+                        <!--footer-->
+                        <tr class="subheading table-secondary">
+                            <td></td>
+                            <td>Sub Total {{area.name}}</td>
+                            <td><!--spec--></td>
+                            <td><!--family--></td>
+                            <td><!--skills--></td>
+                            <td>{{calcTotal(area, 'currentHeadcount')}}</td>
+                            <td *ngFor="let year of years; index as i">{{calcTotal(area, 'year' + (i + 1) + 'Headcount')}}</td>
+                            <td>{{calcTotal(area, 'netChange')}}</td>
+                            <td>{{calcTotal(area, 'forecastAttrition')}}</td>
+                            <td>{{calcTotal(area, 'totalHiringDemand')}}</td>
+                            <td>{{calcTotal(area, 'internal')}}</td>
+                            <td>{{calcTotal(area, 'apprentice')}}</td>
+                            <td>{{calcTotal(area, 'graduate')}}</td>
+                            <td>{{calcTotal(area, 'experienced')}}</td>
+                            <td>{{calcTotal(area, 'contract')}}</td>
+                        </tr>
+                        <tr></tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</main>

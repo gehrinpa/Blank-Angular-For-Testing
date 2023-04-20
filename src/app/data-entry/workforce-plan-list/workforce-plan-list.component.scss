@@ -1,0 +1,19 @@
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+    & form,
+    & .form-control {
+        flex-grow: 1;
+    }
+}
+
+.plan-list {
+    margin: 0 -7.5px;
+
+    & .card {
+        width: 300px;
+        margin: 0 7.5px 15px;
+    }
+}

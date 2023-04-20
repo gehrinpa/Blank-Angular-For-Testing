@@ -1,0 +1,138 @@
+<header class="navbar">
+    <form class="form-inline">
+        <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+        <label for="filter-provider">Provider: </label>
+        <input id="filter-provider" class="form-control mx-2 my-2" type="text" name="provider" placeholder="Provider Name" autocomplete="off" [(ngModel)]="providerFilterText" [typeahead]="providerTypeahead" typeaheadOptionField="name" typeaheadMinLength="3" (typeaheadOnSelect)="providerSelected($event)"/>
+        <label for="filter-course">Course Type: </label>
+        <select class="form-control custom-select mx-2 my-2" name="courseType" [(ngModel)]="courseType" (change)="courseTypeChanged()">
+            <optgroup label="A Levels">
+                <option value="a-level">All A Levels</option>
+            </optgroup>
+            <optgroup label="Vocational">
+                <option value="t_all">All Vocational</option>
+                <option *ngFor="let path of tPathways" value="{{path.value}}">{{path.label}}</option>
+            </optgroup>
+        </select>
+        <label for="filter-course">Course: </label>
+        <input id="filter-course" class="form-control mx-2 ml-2" type="text" name="course" placeholder="Course Title" [(ngModel)]="courseFilterText" (ngModelChange)="filterCourses()"/>
+    </form>
+</header>
+<main class="container-fluid">
+    <div class="card mb-2">
+        <div class="card-body p-2 d-flex flex-wrap">
+            <div class="input-group w-auto mr-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Import data</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upload-spreadsheet" (change)="spreadsheetFileChanged($event)" accept=".ods,.xlsx,.xls">
+                    <label class="custom-file-label" for="upload-spreadsheet">Choose file </label>
+                </div>
+            </div>
+            <button class="btn btn-outline-danger mr-2" (click)="exportFilteredDataSpreadsheet()">Export data</button>
+            <div class="flex-spacer"></div>
+            <ng-template #warnUnsavedTip>
+                <strong>Unsaved: </strong>
+                <ul class="unsaved-course-type-list">
+                    <li *ngFor="let type of modifiedTypes">{{getCourseTypeLabel(type)}}</li>
+                </ul>
+            </ng-template>
+            <i *ngIf="modifiedTypes.length > 0 && (modifiedTypes.length > 1 || modifiedTypes[0] != courseType)" class="material-icons text-warning align-self-center mr-2" [tooltip]="warnUnsavedTip" placement="bottom">warning</i>
+            <button class="btn btn-outline-danger" (click)="saveChanges()">Save</button>
+        </div>
+    </div>
+
+    <!--errors-->
+    <alert type="danger" *ngIf="errorData.length">
+        <ng-container *ngFor="let row of errorData">
+            <strong>{{row.title}}</strong>
+            <ul>
+                <li *ngFor="let error of row.errors">{{error}}</li>
+            </ul>
+            <hr>
+        </ng-container>
+    </alert>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm" #table>
+            <thead class="thead-light">
+                <tr>
+                    <th></th>
+                    <th colspan="11">
+                        Course Details
+                    </th>
+                    <th *ngIf="personas.length" [attr.colspan]="personas.length" class="bg-persona">
+                        Digital Persona
+                    </th>
+                    <th *ngIf="titleLabels.length" [attr.colspan]="titleLabels.length" class="bg-role">
+                        Potential Roles
+                    </th>
+                </tr>
+                <tr class="table-secondary">
+                    <th></th>
+                    <ng-container *ngFor="let column of columns">
+                        <!--multiple column field (roles)-->
+                        <ng-container *ngIf="column.multiCol; else singleCol">
+                            <th *ngFor="let label of column.label" [class]="column.cssClass">
+                                {{label}}
+                            </th>
+                        </ng-container>
+                        <!--single column-->
+                        <ng-template #singleCol>
+                            <th [class]="column.cssClass">{{column.label}}</th>
+                        </ng-template>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of filteredData; let rowIndex = index" [ngClass]="{'table-warning': row.modified, 'table-danger': row.errors}">
+                    <td class="actions">
+                        <a href='#' *ngIf="row.modified" (click)="revertRow(row); false"><i class="material-icons">undo</i></a>
+                    </td>
+                    <ng-container *ngFor="let column of columns">
+                        <!--multiple column field (roles)-->
+                        <ng-container *ngIf="column.multiCol; else singleCol">
+                            <td *ngFor="let subkey of column.subKeys" [class]="column.cssClass">
+                                <ng-container *ngIf="column.type == 'static' || readOnly; else editable">{{row[column.key][subkey]}}</ng-container>
+                                <ng-template #editable>
+                                    <!--use custom checkboxes-->
+                                    <div class="custom-control custom-checkbox" *ngIf="column.type == 'checkbox'">
+                                        <input type="checkbox" class="custom-control-input" id="check-{{rowIndex}}-{{column.key}}-{{subkey}}" [(ngModel)]="row[column.key][subkey]" (change)="rowChanged(row)">
+                                        <label class="custom-control-label" for="check-{{rowIndex}}-{{column.key}}-{{subkey}}">&nbsp;</label>
+                                    </div>
+                                    <input *ngIf="column.type != 'checkbox'" [type]="column.type" [min]="column.min" [max]="column.max" [(ngModel)]="row[column.key][subkey]" (change)="rowChanged(row)">
+                                </ng-template>
+                            </td>
+                        </ng-container>
+                        <!--single column-->
+                        <ng-template #singleCol>
+                            <td [class]="column.cssClass">
+                                <ng-container *ngIf="column.type == 'static' || readOnly; else editable">{{row[column.key]}}</ng-container>
+                                <ng-template #editable>
+                                    <!--use custom checkboxes-->
+                                    <div class="custom-control custom-checkbox" *ngIf="column.type == 'checkbox'">
+                                        <input type="checkbox" class="custom-control-input" id="check-{{rowIndex}}-{{column.key}}" [(ngModel)]="row[column.key]" (change)="rowChanged(row)">
+                                        <label class="custom-control-label" for="check-{{rowIndex}}-{{column.key}}">&nbsp;</label>
+                                    </div>
+                                    <ng-select class="borderless stretch" *ngIf="column.type == 'select'" [multiple]="column.isArray" [items]="column.items | async" [typeahead]="column.typeahead" [bindLabel]="column.selectLabelKey" [bindValue]="column.selectValueKey" [(ngModel)]="row[column.key]" (change)="rowChanged(row)"></ng-select>
+                                    <input *ngIf="column.type != 'checkbox' && column.type != 'select'" [type]="column.type" [min]="column.min" [max]="column.max" [(ngModel)]="row[column.key]" (change)="rowChanged(row)">
+                                </ng-template>
+                            </td>
+                        </ng-template>
+                    </ng-container>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-center pt-4 text-center" *ngIf="defaultGroupData.length > 0">
+        <div class="card mt-4 mb-2 col-12 col-md-10 col-lg-8 col-xl-7">
+            <div class="card-body">
+                <h3>No Results Found</h3>
+                <p>Your account does not currently have data for this provider. Would you like to review the default dataset?</p>
+                <button class="btn btn-primary" (click)="exportDefaultResultsSpreadsheet()">Export</button>
+            </div>
+        </div>
+    </div>
+
+</main>

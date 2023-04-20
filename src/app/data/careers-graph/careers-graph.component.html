@@ -1,0 +1,17 @@
+<div class="row p-r-1 p-l-1">
+    <div class="col-md-12" [@fade]>
+        <h2>Careers Graph</h2>
+    </div>
+    <div class="col-md-12" [@fade] >
+        <div class="card" *ngIf="graph2">
+            <div class="card-body">
+                <app-graph-map [items]="graph2.items" [title1]="graph2.title1" [title2]="graph2.title2" bars="horizontal" height="1500"></app-graph-map>
+            </div>
+        </div>
+        <div class="card" *ngIf="hasNoData">
+            <div class="card-body">
+                <alert type="info" [@fade]>No data available for supplied query</alert>
+            </div>
+        </div>
+    </div>
+</div>

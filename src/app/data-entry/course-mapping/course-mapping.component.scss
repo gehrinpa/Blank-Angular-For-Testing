@@ -1,0 +1,97 @@
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+    & form,
+    & .form-control {
+        flex-grow: 1;
+    }
+}
+
+.flex-spacer {
+    flex-grow: 1;
+}
+
+.unsaved-course-type-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.table-responsive {
+    max-height: calc(100vh - 140px);
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+td > input {
+    width: 100%;
+    border: none;
+    background: none;
+
+    &[type=text] {
+        border-bottom: 1px dashed;
+    }
+}
+
+.custom-checkbox {
+    width: 0;
+    margin: 0 auto;
+}
+
+td.no-wrap, th {
+    white-space: nowrap;
+}
+
+td.course,
+td.course-type {
+    min-width: 300px;
+}
+
+
+td.no-pad {
+    padding: 0;
+}
+
+td.bg-persona {
+    background: #fbe5d6;
+}
+
+th.bg-persona {
+    background: #e5d2c6;
+}
+
+td.bg-role {
+    background: #fef1cb;
+}
+
+th.bg-role {
+    background: #e8debb;
+}
+
+td.actions {
+    line-height: 1;
+}
+
+.table-warning {
+    & > td.bg-persona {
+        background: #fadcb3;
+    }
+    & > td.bg-role {
+        background: #fde8a8;
+    }
+}
+
+.table-danger {
+    & > td.bg-persona {
+        background: #f5c7bb;
+    }
+    & > td.bg-role {
+        background: #f8d3b0;
+    }
+}

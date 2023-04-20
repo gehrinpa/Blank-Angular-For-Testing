@@ -1,0 +1,35 @@
+<div class="fixed-head-wrapper">
+    <app-search-compare-header></app-search-compare-header>
+    <main class="container-fluid">
+        <div class="row p-r-1 p-l-1 p-t-1">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <label for="nutsLevel">NUTS level: </label>
+                                <select class="form-control custom-select" [(ngModel)]="nutsLevel" (ngModelChange)="changeNuts()" name="nutsLevel">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-md">
+                                <label for="nutsItem">Region: </label>
+                                <select class="form-control custom-select" [(ngModel)]="nutsRegion" (ngModelChange)="changeNutsRegion()" name="nutsItem">
+                                    <option *ngFor="let item of nutsItems" [value]="item.id">{{item.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-md col-form-reset">
+                                <button class="btn btn-outline-danger" (click)="resetNuts()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <router-outlet></router-outlet>
+    </main>
+</div>

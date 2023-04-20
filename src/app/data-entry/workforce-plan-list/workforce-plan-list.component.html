@@ -1,0 +1,250 @@
+<div class="fixed-head-wrapper">
+    <header class="navbar">
+        <form class="form-inline">
+            <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+            <label for="filter-sector" class="mr-2">Sector: </label>
+            <input id="filter-sector" class="form-control my-2" type="text" name="sector" placeholder="Sector Name" autocomplete="off" [(ngModel)]="sectorFilterText" [typeahead]="sectorTypeahead" typeaheadOptionField="name" typeaheadMinLength="3" (typeaheadOnSelect)="sectorSelected($event)" (change)="sectorChange()"/>
+
+            <label for="filter-company" class="mx-2">Company: </label>
+            <input id="filter-company" class="form-control my-2" type="text" name="company" placeholder="Company Name" autocomplete="off" [(ngModel)]="companyFilterText" [typeahead]="companyTypeahead" typeaheadOptionField="name" typeaheadMinLength="2" (typeaheadOnSelect)="companySelected($event)" (change)="companyChange()"/>
+
+            <label for="filter-type" class="mx-2">Type: </label>
+            <select id="filter-type" class="form-control custom-select my-2" name="planType" [(ngModel)]="planType" (change)="planTypeChanged()">
+                <option [ngValue]="null">All</option>
+                <option>Plan</option>
+                <option>Scenario</option>
+                <option>Enquiry</option>
+            </select>
+
+            <label for="filter-status" class="mx-2">Status: </label>
+            <select id="filter-status" class="form-control custom-select my-2" name="planStatus" [(ngModel)]="planStatus" (change)="planStatusChanged()">
+                <option [ngValue]="null">All</option>
+                <option>Live</option>
+                <option>Draft</option>
+                <option>Archived</option>
+            </select>
+        </form>
+    </header>
+
+    <main class="container-fluid">
+        <div class="card mb-2">
+            <div class="card-body p-2 d-flex flex-wrap">
+                <button class="btn btn-outline-danger mr-2" (click)="openCreateCompanyModal(createCompanyModalTemplate)">Create Company</button>
+                <button class="btn btn-outline-danger mr-2" (click)="openCreatePlanTargetModal()">Create Plan</button>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap plan-list">
+            <div class="card" *ngFor="let plan of filteredPlans">
+                <div class="card-body">
+                    <h5 class="card-title d-flex justify-content-between">
+                        {{plan.companyId == null ? 'Sector' : 'Company'}} {{plan.type}}
+                        <span class="badge" [ngClass]="badgeModifier[plan.status]">{{plan.status}}</span>
+                    </h5>
+                    <p class="card-text">
+                        {{plan.name}}<br/>
+                        {{plan.companyName || plan.sectorName}}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="btn btn-outline-danger" [routerLink]="['edit', plan.id]">Edit</a>
+                        <i *ngIf="plan.description" class="material-icons" [tooltip]="plan.description" container="body">info</i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    Created: {{plan.dateCreated | date}}<br/>
+                    Modified: {{plan.dateUpdated | date}}
+                    <i class="material-icons">{{icons[plan.type]}}</i>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<ng-template #createCompanyModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Company</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createCompanyModalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form #createCompanyForm="ngForm" (submit)="createCompanySubmit(createCompanyForm)" class="was-validated">
+        <div class="modal-body">
+            <div class="form-group form-row">
+                <label for="createCompanyName" class="col-sm-4 col-form-label">Company Name</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyName" name="name" required [ngModel] placeholder="Name">
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanySector" class="col-sm-4 col-form-label">Sector</label>
+                <div class="col-sm">
+                    <select class="custom-select form-control" id="createCompanySector" name="sector" required [ngModel]>
+                        <option *ngFor="let sector of allSectors" [value]="sector.id">{{sector.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyAddress1" class="col-sm-4 col-form-label">Address 1</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyAddress1" name="address1" required [ngModel]>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyAddress2" class="col-sm-4 col-form-label">Address 2</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyAddress2" name="address2" required [ngModel]>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyCounty" class="col-sm-4 col-form-label">County</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyCounty" name="county" required [ngModel]>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyTown" class="col-sm-4 col-form-label">Town</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyTown" name="town" required [ngModel]>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyPostcode" class="col-sm-4 col-form-label">Postcode</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyPostcode" name="postcode" required [ngModel]>
+                </div>
+            </div>
+
+            <div class="form-group form-row">
+                <label for="createCompanyContactName" class="col-sm-4 col-form-label">Contact Name</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="createCompanyContactName" name="contactName" required [ngModel]>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyContactEmail" class="col-sm-4 col-form-label">Contact Email</label>
+                <div class="col-sm">
+                    <input type="email" class="form-control" id="createCompanyContactEmail" name="contactEmail" required [ngModel] email>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="createCompanyContactPhone" class="col-sm-4 col-form-label">Contact Phone</label>
+                <div class="col-sm">
+                    <input type="tel" class="form-control" id="createCompanyContactPhone" name="contactPhone" required [ngModel]>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="createCompanyModalRef.hide()">Close</button>
+            <button type="submit" class="btn btn-outline-danger" [disabled]="!createCompanyForm.form.valid">Create</button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #createPlanTargetModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Plan</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createPlanTargetModalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        What type of plan do you want to create?
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <button class="btn btn-lg btn-danger" (click)="openCreatePlanSelectSectorModal()">
+                Create Sector Plan
+            </button>
+            or
+            <button class="btn btn-lg btn-danger" (click)="openCreatePlanSelectCompanyModal()">
+                Create Company Plan
+            </button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="createPlanTargetModalRef.hide()">Close</button>
+    </div>
+</ng-template>
+
+<ng-template #createPlanSectorModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Plan</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createPlanSelectModalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="create-plan-sector">Choose an existing sector</label>
+            <select class="custom-select form-control" id="create-plan-sector" [(ngModel)]="createPlanSector">
+                <option *ngFor="let sector of allSectors" [ngValue]="sector">{{sector.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="createPlanSelectBack()">Back</button>
+        <button class="btn btn-outline-danger" [disabled]="!createPlanSector" (click)="openCreatePlanModal()">Next</button>
+    </div>
+</ng-template>
+
+<ng-template #createPlanCompanyModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Plan</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createPlanSelectModalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="create-plan-company">Choose an existing company</label>
+            <select class="custom-select form-control" id="create-plan-company" [(ngModel)]="createPlanCompany">
+                <option *ngFor="let company of allCompanies" [ngValue]="company">{{company.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="createPlanSelectBack()">Back</button>
+        <button class="btn btn-outline-danger" [disabled]="!createPlanCompany" (click)="openCreatePlanModal()">Next</button>
+    </div>
+</ng-template>
+
+<ng-template #createPlanModalTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{createPlanCompany ? createPlanCompany.name : createPlanSector.name}} - Create Plan</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="createPlanModalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form #createPlanForm="ngForm" (submit)="createPlanSubmit(createPlanForm)" class="was-validated">
+        <div class="modal-body">
+            <div class="form-group form-row">
+                <label for="create-plan-name" class="col-sm-4 col-form-label">Plan Name</label>
+                <div class="col-sm">
+                    <input type="text" class="form-control" id="create-plan-name" name="name" required [ngModel] placeholder="Name">
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="create-plan-description" class="col-sm-4 col-form-label">Description</label>
+                <div class="col-sm">
+                    <textarea class="form-control" id="create-plan-description" name="description" required [ngModel]></textarea>
+                </div>
+            </div>
+            <div class="form-group form-row">
+                <label for="create-plan-type" class="col-sm-4 col-form-label">Type</label>
+                <div class="col-sm">
+                    <select id="create-plan-type" class="form-control custom-select" name="type" required [ngModel]>
+                        <option>Plan</option>
+                        <option>Scenario</option>
+                        <option>Enquiry</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <label for="create-plan-copy" class="mb-0">Copy from existing sector template?</label>
+                <input type="checkbox" id="create-plan-copy" name="copyTemplate" [ngModel]>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="createPlanBack()">Back</button>
+            <button type="submit" class="btn btn-outline-danger" [disabled]="!createPlanForm.form.valid">Next</button>
+        </div>
+    </form>
+</ng-template>

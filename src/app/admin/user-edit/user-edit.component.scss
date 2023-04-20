@@ -1,0 +1,110 @@
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+    & form,
+    & .form-control {
+        flex-grow: 1;
+    }
+}
+
+main {
+    max-height: calc(100vh - 74px);
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-spacer {
+    flex-grow: 1;
+}
+
+.table-responsive {
+    max-height: calc(100vh - 140px);
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+tr.subheading {
+    font-weight: bold;
+}
+
+td input {
+    width: 100%;
+    border: none;
+    background: none;
+
+    &[type=text] {
+        border-bottom: 1px dashed;
+    }
+}
+
+td.no-wrap, th {
+    white-space: nowrap;
+}
+
+td.no-pad {
+    padding: 0;
+}
+
+td.job-title {
+    min-width: 16em;
+}
+
+.job-spec-edit {
+    min-width: 16em;
+    display: flex;
+    align-items: center;
+
+    & > a {
+        height: 24px;
+        margin-left: 0.5em;
+    }
+}
+
+td.skills {
+    min-width: 20em;
+}
+
+
+td.editable {
+    background: #fef1cb;
+}
+
+th.editable {
+    background: #e8debb;
+}
+
+td.actions {
+    line-height: 1;
+    white-space: nowrap;
+}
+
+tr:empty {
+    height: 2em;
+}
+
+.table-warning {
+    & > td.editable {
+        background: #fde8a8;
+    }
+}
+
+.table-danger {
+    & > td.editable {
+        background: #f8d3b0;
+    }
+}
+
+tr.deleted > td:not(.actions) {
+    opacity: 0.3;
+}
+
+.role-list-preview {
+    max-height: 50vh;
+    overflow: auto;
+}

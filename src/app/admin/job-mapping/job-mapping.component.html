@@ -1,0 +1,30 @@
+<div class="fixed-head-wrapper">
+    <header class="navbar">
+        <form class="form-inline">
+            <app-request-progress-indicator theme="amplifi"></app-request-progress-indicator>
+            <label for="filter-sector" class="mr-2">Sector: </label>
+            <input id="filter-sector" class="form-control my-2" type="text" name="sector" placeholder="Sector Name" autocomplete="off" [(ngModel)]="sectorFilterText" [typeahead]="sectorTypeahead" typeaheadOptionField="name" typeaheadMinLength="3" (typeaheadOnSelect)="sectorSelected($event)" (change)="sectorChange()"/>
+
+            <label for="filter-company" class="mx-2">Company: </label>
+            <input id="filter-company" class="form-control my-2" type="text" name="company" placeholder="Company Name" autocomplete="off" [(ngModel)]="companyFilterText" [typeahead]="companyTypeahead" typeaheadOptionField="name" typeaheadMinLength="2" (typeaheadOnSelect)="companySelected($event)" (change)="companyChange()"/>
+        </form>
+    </header>
+    <main class="container-fluid">
+        <button class="btn btn-outline-danger" (click)="saveChanges()">Save</button>
+        <table class="table table-striped">
+            <tr>
+                <th>External Job Category</th>
+                <th>Job Family</th>
+            </tr>
+            <tr *ngFor="let career of careers">
+                <td>{{career.title}}</td>
+                <td>
+                    <select class="form-control custom-select" [(ngModel)]="mappings[career.id].jobFamily">
+                        <option [ngValue]="null">None</option>
+                        <option *ngFor="let jobFamily of jobFamilies">{{jobFamily}}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </main>
+</div>

@@ -1,0 +1,13 @@
+<div class="fixed-head-wrapper">
+    <main class="container-fluid">
+        <button class="btn btn-outline-danger mb-1" routerLink="../create">Create Group</button>
+        <table class="table table-striped">
+            <tr>
+                <th>Group Name</th>
+            </tr>
+            <tr *ngFor="let group of groupsList">
+                <td>{{group.name}}</td>
+            </tr>
+        </table>
+    </main>
+</div>

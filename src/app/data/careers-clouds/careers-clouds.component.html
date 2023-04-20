@@ -1,0 +1,66 @@
+<div class="row p-r-1 p-l-1">
+    <div class="col-md-12" [@fade]>
+        <h2>Careers Cloud</h2>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-body-left" *ngIf="clouds[0]" [@fade]>
+            <div class="card-body">
+                <h4 class="card-title">{{clouds[0].title}}</h4>
+                <app-tree-map [items]="clouds[0].items" [title]="clouds[0].title" (select)="onTreemapSelect(0, $event)"></app-tree-map>
+            </div>
+        </div>
+
+        <div class="card card-body-left" *ngIf="!clouds[0]" [@fade]>
+            <div class="card-body">
+                <alert type="info" [@fade]>No data available for supplied query</alert>
+            </div>
+        </div>
+        <tabset class="card card-body-left" *ngIf="clouds[0]">
+            <tab heading="Jobs">
+                <app-job-list [title]="jobListTitles[0]" [subtitle]="jobLocation" [jobs]="jobs[0]" [totalItems]="jobCounts[0]" (pageChanged)="jobPageChanged(0, $event)"></app-job-list>
+            </tab>
+            <tab heading="News" *ngIf="clouds[0].query.substring(0,1) == 'c'">
+                <app-news-list [title]="newsListTitles[0]" [articles]="newsArticles[0]" [totalItems]="newsCounts[0]" (pageChanged)="newsPageChanged(0, $event)"></app-news-list>
+            </tab>
+        </tabset>        
+
+        <div class="card card-body-left mt-2" *ngIf="histograms[0]" [@fade]>
+            <div class="card-body">
+                <h4 class="card-title">{{jobTitles[0]}} salary histogram</h4>
+                <h6 class="card-subtitle text-muted mb-2">{{jobLocation}}</h6>
+                <app-graph-map [items]="histograms[0]" bars="vertical" height="300" [relativeScaleButton]="false"></app-graph-map>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-body-right" *ngIf="clouds[1]" [@fade]>
+            <div class="card-body">
+                <h4 class="card-title">{{clouds[1].title}}</h4>
+                <app-tree-map [items]="clouds[1].items" [title]="clouds[1].title" (select)="onTreemapSelect(1, $event)"></app-tree-map>
+            </div>
+        </div>
+
+        <div class="card card-body-right" *ngIf="!clouds[1]" [@fade]>
+            <div class="card-body">
+                <alert type="info" [@fade]>No data available for supplied query</alert>
+            </div>
+        </div>
+        <tabset class="card card-body-right" *ngIf="clouds[1]">
+            <tab heading="Jobs">
+                <app-job-list [title]="jobListTitles[1]" [subtitle]="jobLocation" [jobs]="jobs[1]" [totalItems]="jobCounts[1]" (pageChanged)="jobPageChanged(1, $event)"></app-job-list>
+            </tab>
+            <tab heading="News" *ngIf="clouds[1].query.substring(0,1) == 'c'">
+                <app-news-list [title]="newsListTitles[1]" [articles]="newsArticles[1]" [totalItems]="newsCounts[1]" (pageChanged)="newsPageChanged(1, $event)"></app-news-list>
+            </tab>
+        </tabset>   
+
+        <div class="card card-body-left mt-2" *ngIf="histograms[1]" [@fade]>
+            <div class="card-body">
+                <h4 class="card-title">{{jobTitles[1]}} salary histogram</h4>
+                <h6 class="card-subtitle text-muted mb-2">{{jobLocation}}</h6>
+                <app-graph-map [items]="histograms[1]" bars="vertical" height="300" [relativeScaleButton]="false"></app-graph-map>
+            </div>
+        </div>
+    </div>
+</div>
